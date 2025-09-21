@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`It's working!`);
 });
 
 fs.writeFile('docker-status.txt', 'I too like cats', { flag: 'a' }, (err) => {
