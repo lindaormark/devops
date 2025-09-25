@@ -2,21 +2,28 @@
 
 //HTTP POST => Storage
 
-const fs = require('node:fs');
 const express = require('express');
+const { time } = require('node:console');
 const app = express();
-const port = 8080;
+const port = 8199;
 
 // Define a route for GET requests to the root URL
-app.get('/', (req, res) => {
-  res.send('Hello World from Express!');
+app.get('/status', (req, res) => {
+  try{
+    timestamp = new Date().toISOString();
+    console.log(timestamp);
+    data = timestamp + ': Uptime 5 hours, free disk in root: 20000 MBytes';
+    var response = express.post('/log', {
+      method: 'POST', message: data});
+    console.log(data);
+    res.set('Content-Type', 'text/plain');
+    res.send(200, data);
+  } catch (error) {
+    res.status(400);
+  }
 });
 
 // Start the server
 app.listen(port, () => {
   console.log(`It's working!`);
 });
-
-fs.writeFile('docker-status.txt', 'I too like cats', { flag: 'a' }, (err) => {
-    if (err) throw err;
-})

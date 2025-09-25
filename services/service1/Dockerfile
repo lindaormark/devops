@@ -1,8 +1,11 @@
 FROM alpine/java:22-jdk
 WORKDIR /app
+
 COPY pom.xml .
-RUN apk add maven
+RUN apk add --no-cache maven
 RUN mvn package
+
 COPY src ./src
 RUN mvn verify
-EXPOSE 8080
+
+EXPOSE 8199

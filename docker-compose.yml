@@ -3,30 +3,25 @@ services:
     build: ./services/service1
     container_name: service_1
     ports:
-      - ports: "3000:3000"
+      - "8199:8199"
     depends_on:
-      ""
-    environment:
-      - ""
+      - service2
+      - storage
     networks:
-      - "" 
+      - service_network
 
   service2:
     build: ./services/service2
     container_name: service_2
-    depends_on:
-      ""
-    environment:
-      - ""
     networks:
-      - "" 
+      - service_network
 
   storage:
     build: ./services/storage
     container_name: storage
-    depends_on:
-      ""
-    environment:
-      - ""
     networks:
-      - "" 
+      - service_network
+
+networks:
+  service_network:
+    driver: bridge
