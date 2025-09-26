@@ -13,6 +13,10 @@ import java.net.HttpURLConnection;
 
 public class Main {
     public static void main(String[] args){
+        try {URL url = new URL("http://localhost:8199");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();} catch (Exception e) {e.printStackTrace();}
+        System.out.println("Service1 started");
+        
         DateTimeFormatter timestamp = DateTimeFormatter.ISO_INSTANT;
         String record1 = timestamp.toString() + ": Uptime 5 hours, free disk in root: 20000 MBytes";
         sendStorage(record1);
@@ -22,7 +26,7 @@ public class Main {
     
     public static String getService2Status() {
         try{
-            URL url = new URL("http://localhost:8199/status");
+            URL url = new URL("http://localhost:8199");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setDoOutput(false);
@@ -41,7 +45,7 @@ public class Main {
             return responseString;
 
         } catch (Exception e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred (Service2).");
             e.printStackTrace();
             return null;
         }
@@ -56,7 +60,7 @@ public class Main {
             conn.getOutputStream().write(data.getBytes("UTF-8"));
             conn.getOutputStream().close();
         } catch (Exception e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred (storage).");
             e.printStackTrace();
         }
     }

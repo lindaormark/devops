@@ -2,6 +2,7 @@ services:
   service1:
     build: ./services/service1
     container_name: service_1
+    tty: true
     ports:
       - "8199:8199"
     depends_on:

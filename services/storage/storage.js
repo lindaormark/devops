@@ -1,4 +1,6 @@
 import { readFile } from 'node:fs';
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 //HTTP POST /log => append the incoming record persistently
 //HTTP GET /log => gets the content of whole stored log

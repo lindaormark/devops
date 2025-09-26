@@ -9,3 +9,4 @@ COPY src ./src
 RUN mvn verify
 
 EXPOSE 8199
+CMD ["java", "src/main/java/Main.java"]
