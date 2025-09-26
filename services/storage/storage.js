@@ -12,9 +12,9 @@ const port = 8199;
 
 app.use(bodyParser.json());
 
-app.post('/log', (req, res) => {
+app.post('/', (req, res) => {
     const postData = req.body;
-    console.log('Received POST data:', postData);
+    console.log('Received POST data:', postData.message);
     fs.writeFile('docker-status.txt', postData.message + '\n', { flag: 'a' }, (err) => {
         if (err) {
             console.error('Error writing to file:', err);
@@ -24,7 +24,7 @@ app.post('/log', (req, res) => {
     });
 });
 
-app.get('/log', (req, res) => {
+app.get('/', (req, res) => {
     const logData = readFile('docker-status.txt', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading file:', err);

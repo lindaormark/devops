@@ -7,4 +7,5 @@ RUN npm install --production
 
 COPY . .
 
+EXPOSE 8199
 CMD ["npm", "start"]

@@ -8,16 +8,15 @@ const app = express();
 const port = 8199;
 
 // Define a route for GET requests to the root URL
-app.get('/status', (req, res) => {
+app.get('/', (req, res) => {
   try{
     timestamp = new Date().toISOString();
-    console.log(timestamp);
     data = timestamp + ': Uptime 5 hours, free disk in root: 20000 MBytes';
-    var response = express.post('/log', {
-      method: 'POST', message: data});
+
     console.log(data);
     res.set('Content-Type', 'text/plain');
-    res.send(200, data);
+    res.status(200).send(data);
+    var response = express.post("http://storage:8199", {method: 'POST', message: data});
   } catch (error) {
     res.status(400);
   }
