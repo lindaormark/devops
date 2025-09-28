@@ -5,6 +5,8 @@ services:
     tty: true
     ports:
       - "8199:8199"
+    volumes:
+      - vstorage:/vstorage
     depends_on:
       - service2
       - storage
@@ -14,14 +16,27 @@ services:
   service2:
     build: ./services/service2
     container_name: service_2
+    volumes:
+      - vstorage:/vstorage
     networks:
       - service_network
 
   storage:
     build: ./services/storage
     container_name: storage
+    volumes:
+      - storage_data:/data
     networks:
       - service_network
+
+volumes:
+  vstorage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./vstorage
+      o: bind
+  storage_data:
 
 networks:
   service_network:

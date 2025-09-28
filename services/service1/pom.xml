@@ -18,7 +18,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <mainClass>Service</mainClass>
+                            <mainClass>Service1</mainClass>
                             <onejarVersion>0.97</onejarVersion>
                             <attachToBuild>true</attachToBuild>
                         </configuration>

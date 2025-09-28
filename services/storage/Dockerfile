@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY . .
+VOLUME ["/data"]
 
 EXPOSE 8199
 CMD ["npm", "start"]
