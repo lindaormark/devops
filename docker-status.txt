@@ -1,1 +1,12 @@
-I like cats
+docker container ls
+CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+f21c923d744f   devops-service1   "/__cacert_entrypoin…"   9 minutes ago   Up 9 minutes   0.0.0.0:8199->8199/tcp, [::]:8199->8199/tcp   service_1
+d94bc0ee4060   devops-storage    "docker-entrypoint.s…"   9 minutes ago   Up 9 minutes   8199/tcp                                      storage
+ee6860888e6f   devops-service2   "docker-entrypoint.s…"   9 minutes ago   Up 9 minutes   8199/tcp                                      service_2
+
+docker network ls
+NETWORK ID     NAME                     DRIVER    SCOPE
+107f4ccd9164   bridge                   bridge    local
+da4a27b109f0   devops_service_network   bridge    local
+575b39ae4218   host                     host      local
+50386a461a69   none                     null      local

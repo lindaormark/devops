@@ -1,0 +1,3 @@
+I used ChatGPT GPT-5 to better understand the assignment's instructions as I was unsure how to start implementing the project.
+I also used it to help me understand why the program's output was sometimes different. I was blinded by my own code so it spotted something like an exta "!" which changed the meaning completely.
+It could not help me every time even when provided with context and source codes. I asked a fellow student to help then.
