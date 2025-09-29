@@ -1,3 +1,4 @@
+import { log } from "console";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
@@ -7,18 +8,23 @@ const require = createRequire(import.meta.url);
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
+const path = require('path');
 const port = 8199;
 
-app.use(bodyParser.json());
+const app = express();
+
+const logFile = path.join('/data', 'log.txt');
+
+app.use(bodyParser.text({ type: 'text/plain' }));
+app.use(bodyParser.text({ type: '*/*' }));
 
 if (!fs.existsSync("/data")) fs.mkdirSync("/data", { recursive: true });
-if (!fs.existsSync("/data/log.txt")) fs.writeFileSync("/data/log.txt", "");
+if (!fs.existsSync(logFile)) fs.writeFileSync(logFile, "");
 
 app.post('/', (req, res) => {
-    const postData = req;
+    let postData = req.body;
     console.log('Received POST data:', postData);
-    fs.writeFile("/data/log.txt", postData + '\n', { flag: 'a' }, (err) => {
+    fs.writeFileSync(logFile, postData + '\n', { flag: 'a' }, (err) => {
         if (err) {
             console.error('Error writing to file:', err);
             return res.status(500, 'Internal Server Error');
@@ -28,13 +34,14 @@ app.post('/', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    const logData = fs.readFile('vstorage/log.txt', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-        }
-    console.log('Log data:', logData);
-    res.status(200);
-    });
+    if (fs.existsSync("/data/log.txt")) {
+        let logData = fs.readFileSync("/data/log.txt", 'utf8');
+        console.log('Log data:', logData);
+        res.type("text/plain").send(logData);
+    } else {
+        console.log('No log data found');
+        res.type("text/plain").send("No log data found");
+    }
 });
 
 app.listen(port, () => {

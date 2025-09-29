@@ -11,8 +11,18 @@ const port = 8199;
 app.get('/', (req, res) => {
   try{
     timestamp = new Date().toISOString();
-    data = timestamp + ': Uptime 5 hours, free disk in root: 20000 MBytes';
+    const uptimeSeconds = process.uptime();
+    const uptimeHours = Math.floor(uptimeSeconds / 3600);
+    let freeDisk = -1;
+    try {
+      let output = require('child_process').execSync("df -m / | tail -1 | awk '{print$4}'").toString();
+      freeDisk = parseInt(output, 10);
+    } catch (error) {
+      console.error('Could not read disk space:', error);
+    }
+    data = timestamp + `: Uptime ${uptimeHours} hours, free disk in root: ${freeDisk} MBytes`;
 
+    console.log('Data created! Sending it now:');
     console.log(data);
     res.set('Content-Type', 'text/plain');
     res.status(200).send(data);

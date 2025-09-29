@@ -69,6 +69,7 @@ public class Service1 {
             } else if (endpoint.equals("/status")) {
                 String record1 = generateStatus();
 
+                System.out.println(record1);
                 logToStorage(record1);
                 logToVolume(record1);
 
