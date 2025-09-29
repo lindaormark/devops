@@ -1,9 +1,5 @@
-import { log } from "console";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-
-//HTTP POST /log => append the incoming record persistently
-//HTTP GET /log => gets the content of whole stored log
 
 const fs = require('fs');
 const express = require('express');
@@ -12,18 +8,19 @@ const path = require('path');
 const port = 8199;
 
 const app = express();
-
 const logFile = path.join('/data', 'log.txt');
 
+// Middleware to parse bodies
 app.use(bodyParser.text({ type: 'text/plain' }));
 app.use(bodyParser.text({ type: '*/*' }));
 
+// Ensure /data directory and log file exist
 if (!fs.existsSync("/data")) fs.mkdirSync("/data", { recursive: true });
 if (!fs.existsSync(logFile)) fs.writeFileSync(logFile, "");
 
+// Handle POST requests
 app.post('/', (req, res) => {
     let postData = req.body;
-    console.log('Received POST data:', postData);
     fs.writeFileSync(logFile, postData + '\n', { flag: 'a' }, (err) => {
         if (err) {
             console.error('Error writing to file:', err);
@@ -33,10 +30,11 @@ app.post('/', (req, res) => {
     });
 });
 
+// Handle GET requests
 app.get('/', (req, res) => {
     if (fs.existsSync("/data/log.txt")) {
         let logData = fs.readFileSync("/data/log.txt", 'utf8');
-        console.log('Log data:', logData);
+        console.log('Sending log data:\n', logData);
         res.type("text/plain").send(logData);
     } else {
         console.log('No log data found');
@@ -44,6 +42,7 @@ app.get('/', (req, res) => {
     }
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Storage service listening at http://localhost:${port}`);
 });

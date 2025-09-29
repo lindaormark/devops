@@ -1,10 +1,3 @@
-//cat ./vstorage (näytä vstorage sisältö)
-//curl localhost:8199/log (= GET localhost:8199/status)
-
-//"Timestamp (add actual timestamp): uptime <X> hours, free disk in root: <X> MBytes"
-//HTTP GET /status => Service2
-//HTTP POST /log => Storage
-
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -28,12 +21,13 @@ public class Service1 {
     private static final Path VSTORAGE_FILE = Path.of("/vstorage/log.txt");
     private static final HttpClient client = HttpClient.newHttpClient();
     public static void main(String[] args) throws IOException {
+        // Create server and establish contexts
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
         server.createContext("/status", new ForwardHandler("/status"));
         server.createContext("/log", new ForwardHandler("/log"));
 
-        server.setExecutor(null); // default executor
+        server.setExecutor(null);
         System.out.println("Listening on http://localhost:" + PORT);
         server.start();
     }
@@ -49,6 +43,7 @@ public class Service1 {
         public void handle(HttpExchange exchange) throws IOException {
             if (endpoint.equals("/log")) {
                 String response = "";
+                // Contact Storage service to get log data
                 try {
                     HttpRequest req = HttpRequest.newBuilder()
                             .uri(URI.create(STORAGE_URL))
@@ -67,12 +62,13 @@ public class Service1 {
                 exchange.close();
             
             } else if (endpoint.equals("/status")) {
+                // Generate service1 status and send it to Storage
                 String record1 = generateStatus();
 
-                System.out.println(record1);
                 logToStorage(record1);
                 logToVolume(record1);
 
+                // Contact Service2 to get its status
                 String record2 = "";
                 try {
                     HttpRequest req = HttpRequest.newBuilder()
@@ -86,18 +82,20 @@ public class Service1 {
                 }
 
                 String response = record1 + "\n" + record2;
+                System.out.println(response);
                 byte[] bytes = response.getBytes();
                 exchange.getResponseHeaders().set("Content-Type", "text/plain");
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
                 exchange.close();
             } else {
-                exchange.sendResponseHeaders(405, -1); // Method Not Allowed
+                exchange.sendResponseHeaders(405, -1);
                 return;
             }
         }
     }
     private static String generateStatus() {
+        // Calculate uptime and free disk space
         long uptimeMs = ManagementFactory.getRuntimeMXBean().getUptime();
         double uptimeHours = uptimeMs / (1000.0 * 60 * 60);
         long freeDiskMB;
@@ -112,6 +110,7 @@ public class Service1 {
     }
 
     private static void logToStorage(String record) {
+        // Send status record to Storage service
         try {
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(STORAGE_URL))
@@ -125,6 +124,7 @@ public class Service1 {
     }
 
     private static void logToVolume(String record) {
+        // Write status record to /vstorage/log.txt
         try {
             File dir = VSTORAGE_FILE.getParent().toFile();
             if (!dir.exists()) dir.mkdirs();
